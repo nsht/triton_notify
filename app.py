@@ -1,9 +1,7 @@
-from flask import Flask,make_response
+from flask import Flask, make_response
 
 app = Flask(__name__)
 MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
-
-
 
 
 @app.route("/")
