@@ -14,7 +14,7 @@ def test(name):
     return f"Hey {name}"
 
 
-@app.route("/send/<message_type>", methods=["GET", "POST"])
+@app.route("/message/<message_type>", methods=["GET", "POST"])
 def send(message_type):
     if message_type not in MESSAGE_TYPES:
         return make_response("Type not found", 404)
