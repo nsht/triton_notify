@@ -9,11 +9,6 @@ def hello():
     return "Hello World!"
 
 
-@app.route("/test/<name>")
-def test(name):
-    return f"Hey {name}"
-
-
 @app.route("/message/<message_type>", methods=["POST"])
 def send(message_type):
     print(request.json)
