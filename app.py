@@ -22,21 +22,6 @@ class Message(Resource):
         print(request.json)
         return {"status":"ok"}
 
-
-
-# @app.route("/message/<message_type>", methods=["POST"])
-# def send(message_type):
-#     print(request.json)
-#     request_object = request.json
-#     if request_object.get("message"):
-#         print(request_object["message"])
-#     if message_type not in MESSAGE_TYPES:
-#         return make_response("Type not found", 404)
-#     return f"{message_type} sent successfully"
-
-
-
-
 api.add_resource(Test,'/')
 api.add_resource(Message,'/message/<string:message_type>')
 
