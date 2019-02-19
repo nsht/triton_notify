@@ -1,7 +1,7 @@
 import pdb
 
 from flask import Flask, request, make_response
-from flask_restful import Resource, Api,abort
+from flask_restful import Resource, Api, abort
 
 app = Flask(__name__)
 api = Api(app)
@@ -15,15 +15,16 @@ class Test(Resource):
 
 
 class Message(Resource):
-    def post(self,message_type):
+    def post(self, message_type):
         if message_type not in MESSAGE_TYPES:
             abort(404, message=f"Invalid message type {message_type}")
         print(message_type)
         print(request.json)
-        return {"status":"ok"}
+        return {"status": "ok"}
 
-api.add_resource(Test,'/')
-api.add_resource(Message,'/message/<string:message_type>')
+
+api.add_resource(Test, "/")
+api.add_resource(Message, "/message/<string:message_type>")
 
 
 if __name__ == "__main__":
