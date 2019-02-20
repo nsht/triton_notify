@@ -20,9 +20,6 @@ class Telegram:
         message_status = telegram.notify(
             message=self.message, token=self.token, chat_id=self.chat_id
         )
-        import pdb
-
-        pdb.set_trace()
         if message_status.errors:
             return {
                 "message_status": "Not Sent",
