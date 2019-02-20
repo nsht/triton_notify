@@ -18,4 +18,4 @@ class Telegram:
         print(message_status)
         if message_status.errors:
             return {"message_status":False,"status_message":"Unable to send message","status_code":500}
-        return {"message_status":True,"success":"Message Send Successfully","status_code":200}
+        return {"message_status":True,"status_message":"Message Send Successfully","status_code":200}
