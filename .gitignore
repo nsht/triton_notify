@@ -5,3 +5,4 @@ __pycache__/*
 triton-notify-dev-template-1550342700.json
 triton-notify-dev-template-1550345350.json
 zappa_settings.json
+*.pyc
