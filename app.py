@@ -8,7 +8,9 @@ app = Flask(__name__)
 api = Api(app)
 
 MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
-MESSAGE_PROVIDERS = {'telegram':Telegram}
+MESSAGE_PROVIDERS = {"telegram": Telegram}
+
+
 class Test(Resource):
     def get(self):
         return "{'hello':'test'}"
@@ -20,7 +22,7 @@ class Message(Resource):
             abort(404, message=f"Invalid message type {message_type}")
         message_provider = MESSAGE_PROVIDERS.get(message_type)(request.json)
         message_status = message_provider.send_message()
-        return message_status,message_status['status_code']
+        return message_status, message_status["status_code"]
 
 
 api.add_resource(Test, "/")
