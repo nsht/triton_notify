@@ -19,9 +19,8 @@ class Message(Resource):
         if message_type not in MESSAGE_TYPES:
             abort(404, message=f"Invalid message type {message_type}")
         message_provider = MESSAGE_PROVIDERS.get(message_type)(request.json)
-        message_provider.send_message()
-
-        return {"status": "ok"}
+        message_status = message_provider.send_message()
+        return message_status['status_message'],message_status['status_code']
 
 
 api.add_resource(Test, "/")
