@@ -2,19 +2,16 @@ import pdb
 
 from flask import Flask, request, make_response
 from flask_restful import Resource, Api, abort
+from flask_sqlalchemy import SQLAlchemy
 from resources.telegram import Telegram
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+db = SQLAlchemy(app)
 api = Api(app)
 
 MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
 MESSAGE_PROVIDERS = {"telegram": Telegram}
-
-
-class Test(Resource):
-    def get(self):
-        return "{'hello':'test'}"
-
 
 class Message(Resource):
     def post(self, message_type):
