@@ -9,6 +9,9 @@ class Telegram:
         self.token = message_data.get("token")
         self.chat_id = message_data.get("chat_id")
 
+    def __len__(self):
+        return len(self.message)
+
     def send_message(self):
         if not all([self.message, self.token, self.chat_id]):
             return {
