@@ -12,6 +12,9 @@ class Telegram:
     def __len__(self):
         return len(self.message)
 
+    def __repr__(self):
+        return "{!r}({!r})".format(self.__class__.__name__, self.message_data)
+
     def send_message(self):
         if not all([self.message, self.token, self.chat_id]):
             return {
