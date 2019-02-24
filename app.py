@@ -9,12 +9,12 @@ from flask_sqlalchemy import SQLAlchemy
 
 from resources.telegram import Telegram
 
-handler = RotatingFileHandler("app.log", maxBytes=10000, backupCount=3)
-handler.setLevel(logging.INFO)
+# handler = RotatingFileHandler("app.log", maxBytes=10000, backupCount=3)
+# handler.setLevel(logging.INFO)
 app = Flask(__name__)
 
 app.logger.setLevel(logging.DEBUG)
-app.logger.addHandler(handler)
+# app.logger.addHandler(handler)
 
 # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 # db = SQLAlchemy(app)
