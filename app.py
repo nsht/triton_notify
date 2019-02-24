@@ -15,6 +15,7 @@ app = Flask(__name__)
 
 app.logger.setLevel(logging.DEBUG)
 app.logger.addHandler(handler)
+
 # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 # db = SQLAlchemy(app)
 api = Api(app)
@@ -22,6 +23,9 @@ api = Api(app)
 MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
 MESSAGE_PROVIDERS = {"telegram": Telegram}
 
+class Index(Resource):
+    def get(self):
+        return 'ok',200
 
 class HealthCheck(Resource):
     def get(self):
@@ -42,7 +46,7 @@ class Message(Resource):
         message_status = message_provider.send_message()
         return message_status, message_status["status_code"]
 
-
+api.add_resource(Index,"/")
 api.add_resource(Message, "/message/<string:message_type>")
 api.add_resource(HealthCheck, "/healthcheck")
 
