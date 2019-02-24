@@ -26,7 +26,7 @@ MESSAGE_PROVIDERS = {"telegram": Telegram}
 class HealthCheck(Resource):
     def get(self):
         app.logger.info(
-            f"HealthCheck done by {request.remote_addr} time:{datetime.datetime.utcnow().isoformat()}"
+            f"{datetime.datetime.utcnow().isoformat()} | HealthCheck done | {request.remote_addr}"
         )
         return {"status": "ok"}, 200
 
@@ -35,7 +35,7 @@ class Message(Resource):
     def post(self, message_type):
         if message_type not in MESSAGE_TYPES:
             app.logger.error(
-                f"Invalid message type:{message_type} by {request.remote_addr} time:{datetime.datetime.utcnow().isoformat()}"
+                f"{datetime.datetime.utcnow().isoformat()} | Invalid message type:{message_type} | {request.remote_addr}"
             )
             abort(404, message=f"Invalid message type {message_type}")
         message_provider = MESSAGE_PROVIDERS.get(message_type)(request.json)
