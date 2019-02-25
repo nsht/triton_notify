@@ -1,7 +1,7 @@
 import datetime
+import logging
 
 from notifiers import get_notifier
-import logging
 
 log = logging.getLogger(__name__ + ".telegram")
 # TODO info level not getting logged need to check
