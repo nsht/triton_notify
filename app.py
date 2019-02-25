@@ -11,8 +11,8 @@ from resources.telegram import Telegram
 
 # handler = RotatingFileHandler("app.log", maxBytes=10000, backupCount=3)
 # handler.setLevel(logging.INFO)
-app = Flask(__name__)
 
+app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
 # app.logger.addHandler(handler)
 
@@ -23,9 +23,11 @@ api = Api(app)
 MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
 MESSAGE_PROVIDERS = {"telegram": Telegram}
 
+
 class Index(Resource):
     def get(self):
-        return 'ok',200
+        return "ok", 200
+
 
 class HealthCheck(Resource):
     def get(self):
@@ -42,11 +44,12 @@ class Message(Resource):
                 f"{datetime.datetime.utcnow().isoformat()} | Invalid message type:{message_type} | {request.remote_addr}"
             )
             abort(404, message=f"Invalid message type {message_type}")
-        message_provider = MESSAGE_PROVIDERS.get(message_type)(request.json)
+        message_provider = MESSAGE_PROVIDERS.get(message_type)(request.json, request)
         message_status = message_provider.send_message()
         return message_status, message_status["status_code"]
 
-api.add_resource(Index,"/")
+
+api.add_resource(Index, "/")
 api.add_resource(Message, "/message/<string:message_type>")
 api.add_resource(HealthCheck, "/healthcheck")
 
