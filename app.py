@@ -13,9 +13,23 @@ from resources.telegram import Telegram
 
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+db = SQLAlchemy(app)
 
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-# db = SQLAlchemy(app)
+
+class User(db.Model):
+    uid = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    user_type = db.Column(db.String(20), nullable=False)
+    email_id = db.Column(db.String(120), unique=True, nullable=False)
+    date_of_creation = db.Column(db.TIMESTAMP(timezone=True), nullable=False)
+    last_login = db.Column(db.TIMESTAMP(timezone=True))
+    status = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f"Username: {self.username}"
+
 
 # Adds RotatingFileHandler if app is not running on aws lambda
 # Since labda instances are read only RotatingFileHandler won't work
