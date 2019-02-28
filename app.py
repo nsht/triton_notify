@@ -42,7 +42,7 @@ class Permissions(db.Model):
     )
 
     def __repr__(self):
-        return f"Permission: {perm_name}"
+        return f"Permission: {self.perm_name}"
 
 
 class UserPermissions(db.Model):
@@ -55,7 +55,7 @@ class UserPermissions(db.Model):
     )
 
     def __repr__(self):
-        return f"Permission{perm_id}, User={user_id}"
+        return f"Permission{self.perm_id}, User={self.user_id}"
 
 
 # Adds RotatingFileHandler if app is not running on aws lambda
