@@ -27,7 +27,7 @@ if os.environ.get("AWS_EXECUTION_ENV") == None:
     app.logger.addHandler(handler)
 
 api = Api(app)
-
+print(__name__)
 MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
 MESSAGE_PROVIDERS = {"telegram": Telegram}
 
