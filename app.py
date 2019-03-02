@@ -14,8 +14,8 @@ from resources.telegram import Telegram
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-with app.app_context():
-    db.init_app(app)
+app.app_context().push()
+db.init_app(app)
 
 
 # Adds RotatingFileHandler if app is not running on aws lambda
