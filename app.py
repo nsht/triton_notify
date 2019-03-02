@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from models.models import db
 from resources.telegram import Telegram
+from resources.twitter import Twitter
 
 
 app = Flask(__name__)
@@ -27,7 +28,7 @@ if os.environ.get("AWS_EXECUTION_ENV") == None:
     app.logger.addHandler(handler)
 
 api = Api(app)
-print(__name__)
+
 MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
 MESSAGE_PROVIDERS = {"telegram": Telegram}
 
