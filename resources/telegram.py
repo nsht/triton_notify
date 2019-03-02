@@ -2,10 +2,8 @@ import datetime
 import logging
 
 from notifiers import get_notifier
+from flask import current_app as app
 
-log = logging.getLogger(__name__ + ".telegram")
-# TODO info level not getting logged need to check
-log.setLevel(logging.DEBUG)
 
 
 class Telegram:
@@ -25,7 +23,7 @@ class Telegram:
 
     def send_message(self):
         if not all([self.message, self.token, self.chat_id]):
-            log.error(
+            app.logger.error(
                 f"{datetime.datetime.utcnow().isoformat()} | Invalid Request:{self.message_data} | {self.request_obj.remote_addr}"
             )
             return {
@@ -38,7 +36,7 @@ class Telegram:
             message=self.message, token=self.token, chat_id=self.chat_id
         )
         if message_status.errors:
-            log.error(
+            app.logger.error(
                 f"{datetime.datetime.utcnow().isoformat()} | Unable to send:{message_status.errors[0]} | {self.request_obj.remote_addr}"
             )
             return {
@@ -48,7 +46,7 @@ class Telegram:
                 ),
                 "status_code": message_status.response.status_code,
             }
-        log.info(
+        app.logger.info(
             f"{datetime.datetime.utcnow().isoformat()} | Telegram message sent:{self.message} | {self.request_obj.remote_addr}"
         )
         return {
