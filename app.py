@@ -30,7 +30,7 @@ if os.environ.get("AWS_EXECUTION_ENV") == None:
 api = Api(app)
 
 MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
-MESSAGE_PROVIDERS = {"telegram": Telegram}
+MESSAGE_PROVIDERS = {"telegram": Telegram, "twitter": Twitter}
 
 
 class Index(Resource):
