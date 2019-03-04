@@ -48,7 +48,21 @@ class HealthCheck(Resource):
         return {"status": "ok"}, 200
 
 
+def check_message_type(func):
+    def inner(*args, **kwargs):
+        message_type = kwargs.get("message_type", "NA")
+        if kwargs.get("message_type", False) and kwargs.get("message_type") in MESSAGE_TYPES:
+            print(*args)
+            print("deco running")
+            return func(*args, **kwargs)
+        else:
+            abort(404, message=f"Invalid message type {message_type}")
+
+    return inner
+
+
 class Message(Resource):
+    @check_message_type
     def post(self, message_type):
         if message_type not in MESSAGE_TYPES:
             app.logger.error(
@@ -66,7 +80,6 @@ api.add_resource(HealthCheck, "/healthcheck")
 
 if __name__ == "__main__":
     app.run()
-
 
 
 # TODO
