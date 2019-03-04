@@ -1,8 +1,9 @@
 import pdb
 import os
+import datetime
 import logging
 from logging.handlers import RotatingFileHandler
-import datetime
+
 from flask import Flask, request, make_response
 from flask_restful import Resource, Api, abort
 from flask_sqlalchemy import SQLAlchemy
@@ -14,6 +15,7 @@ from resources.twitter import Twitter
 
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
+# TODO switch out to rds/sql after testing
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 app.app_context().push()
 db.init_app(app)
@@ -64,3 +66,17 @@ api.add_resource(HealthCheck, "/healthcheck")
 
 if __name__ == "__main__":
     app.run()
+
+
+
+# TODO
+# Check if decorators can be used to validate token
+# Create users and  tokens manually
+# Function to validate tokens
+# Functions to create tokens
+# Functions to create/delete users
+# Functions to log request numbers
+# Functions to implement ratelimiting
+# Queues to implement writes to db
+# Email sender
+# Log writer
