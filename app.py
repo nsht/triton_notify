@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
 
 # TODO
-# Check if decorators can be used to validate token
+# Add formaters to logs
 # Create users and  tokens manually
 # Function to validate tokens
 # Functions to create tokens
