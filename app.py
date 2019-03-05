@@ -17,6 +17,7 @@ app.logger.setLevel(logging.DEBUG)
 
 # TODO switch out to rds/sql after testing
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.app_context().push()
 db.init_app(app)
 
