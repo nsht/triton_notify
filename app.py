@@ -3,7 +3,6 @@ import os
 import datetime
 import logging
 from logging.handlers import RotatingFileHandler
-
 from flask import Flask, request, make_response
 from flask_restful import Resource, Api, abort
 from flask_sqlalchemy import SQLAlchemy
@@ -11,10 +10,11 @@ from flask_sqlalchemy import SQLAlchemy
 from models.models import db
 from resources.telegram import Telegram
 from resources.twitter import Twitter
-
-
+from resources.auth_handler import check_message_type
+from resources.constants import *
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
+
 # TODO switch out to rds/sql after testing
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 app.app_context().push()
@@ -31,7 +31,7 @@ if os.environ.get("AWS_EXECUTION_ENV") == None:
 
 api = Api(app)
 
-MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
+# MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
 MESSAGE_PROVIDERS = {"telegram": Telegram, "twitter": Twitter}
 
 
@@ -48,27 +48,12 @@ class HealthCheck(Resource):
         return {"status": "ok"}, 200
 
 
-def check_message_type(func):
-    def inner(*args, **kwargs):
-        message_type = kwargs.get("message_type", "NA")
-        if kwargs.get("message_type", False) and kwargs.get("message_type") in MESSAGE_TYPES:
-            print(*args)
-            print("deco running")
-            return func(*args, **kwargs)
-        else:
-            abort(404, message=f"Invalid message type {message_type}")
 
-    return inner
 
 
 class Message(Resource):
     @check_message_type
     def post(self, message_type):
-        if message_type not in MESSAGE_TYPES:
-            app.logger.error(
-                f"{datetime.datetime.utcnow().isoformat()} | Invalid message type:{message_type} | {request.remote_addr}"
-            )
-            abort(404, message=f"Invalid message type {message_type}")
         message_provider = MESSAGE_PROVIDERS.get(message_type)(request.json, request)
         message_status = message_provider.send_message()
         return message_status, message_status["status_code"]
