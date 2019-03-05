@@ -12,12 +12,13 @@ from resources.telegram import Telegram
 from resources.twitter import Twitter
 from resources.auth_handler import check_message_type
 from resources.constants import *
+
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
 
 # TODO switch out to rds/sql after testing
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.app_context().push()
 db.init_app(app)
 
@@ -47,9 +48,6 @@ class HealthCheck(Resource):
             f"{datetime.datetime.utcnow().isoformat()} | HealthCheck done | {request.remote_addr}"
         )
         return {"status": "ok"}, 200
-
-
-
 
 
 class Message(Resource):

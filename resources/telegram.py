@@ -5,7 +5,6 @@ from notifiers import get_notifier
 from flask import current_app as app
 
 
-
 class Telegram:
     def __init__(self, message_data, request_obj):
         print(message_data)

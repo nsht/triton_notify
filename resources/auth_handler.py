@@ -6,13 +6,11 @@ from flask import request
 from resources.constants import *
 from flask_restful import abort
 
+
 def check_message_type(func):
     def inner(*args, **kwargs):
-        import pdb; pdb.set_trace()
         message_type = kwargs.get("message_type", "NA")
         if kwargs.get("message_type", False) and kwargs.get("message_type") in MESSAGE_TYPES:
-            print(*args)
-            print("deco running")
             return func(*args, **kwargs)
         else:
             app.logger.error(
