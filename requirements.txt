@@ -28,6 +28,7 @@ notifiers==1.0.3
 oauthlib==3.0.1
 placebo==0.8.2
 pyasn1==0.4.5
+PyJWT==1.7.1
 PySocks==1.6.8
 python-dateutil==2.6.1
 python-slugify==1.2.4
