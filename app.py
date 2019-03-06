@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models.models import db
 from resources.telegram import Telegram
 from resources.twitter import Twitter
-from resources.auth_handler import check_message_type
+from resources.auth_handler import check_message_type,create_auth_token
 from resources.constants import *
 
 app = Flask(__name__)
@@ -57,10 +57,18 @@ class Message(Resource):
         message_status = message_provider.send_message()
         return message_status, message_status["status_code"]
 
+class Login(Resource):
+    def post(self):
+        app.logger.info(f"{datetime.datetime.utcnow().isoformat()} | Login Attempted | {request.remote_addr}")
+        # TODO write login validation
+        auth_token = create_auth_token(1)
+        return {'token':auth_token}, 200
+
 
 api.add_resource(Index, "/")
 api.add_resource(Message, "/message/<string:message_type>")
 api.add_resource(HealthCheck, "/healthcheck")
+api.add_resource(Login, "/login")
 
 if __name__ == "__main__":
     app.run()
