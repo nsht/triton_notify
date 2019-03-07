@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models.models import db
 from resources.telegram import Telegram
 from resources.twitter import Twitter
-from resources.auth_handler import check_message_type, create_auth_token
+from resources.auth_handler import check_message_type, create_auth_token, validate_auth_token
 from resources.constants import *
 
 app = Flask(__name__)
@@ -51,11 +51,15 @@ class HealthCheck(Resource):
 
 
 class Message(Resource):
+    @validate_auth_token
     @check_message_type
     def post(self, message_type):
         message_provider = MESSAGE_PROVIDERS.get(message_type)(request.json, request)
         message_status = message_provider.send_message()
-        return message_status, message_status["status_code"]
+        if message_status:
+            return message_status, message_status["status_code"]
+        else:
+            return {"status":"error"},500
 
 
 class Login(Resource):

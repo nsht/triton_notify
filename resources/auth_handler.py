@@ -36,3 +36,30 @@ def create_auth_token(user_id):
             f"{datetime.datetime.utcnow().isoformat()} |Error generating token:{e} | {request.remote_addr}"
         )
         return
+
+def decode_auth_token(auth_token):
+    try:
+        payload = jwt.decode(auth_token,SECRET_KEY)
+        return payload['sub']
+    except jwt.ExpiredSignatureError:
+        app.logger.error(
+            f"{datetime.datetime.utcnow().isoformat()} |Signature Expired | {request.remote_addr}"
+        )
+        return 'Signature Expired'
+    except jwt.InvalidTokenError:
+        app.logger.error(
+            f"{datetime.datetime.utcnow().isoformat()} |Invalid token| {request.remote_addr}"
+        )
+        return 'Invalid token'
+
+def validate_auth_token(func):
+    def inner(*args,**kwargs):
+        auth_token = request.json.get("auth_token", "NA")
+        token_data = decode_auth_token(auth_token)
+        print(token_data)
+        if isinstance(token_data,str):
+            abort(401, message=f"Invalid Token")
+        else:
+            return func(*args, **kwargs)
+    return inner
+
