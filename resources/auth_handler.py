@@ -26,7 +26,7 @@ def create_auth_token(user_id):
     payload = {
         "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1),
         "iat": datetime.datetime.utcnow(),
-        "user_id": user_id,
+        "sub": user_id,
     }
     try:
         # TODO change secret to actual secret string stored in env variables
