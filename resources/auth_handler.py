@@ -29,8 +29,7 @@ def create_auth_token(user_id):
         "sub": user_id,
     }
     try:
-        # TODO change secret to actual secret string stored in env variables
-        token = jwt.encode(payload, "secret", algorithm="HS256").decode()
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256").decode()
         return token
     except Exception as e:
         app.logger.error(
