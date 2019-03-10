@@ -2,9 +2,11 @@ aniso8601==4.1.0
 argcomplete==1.9.3
 awacs==0.8.2
 awscli==1.16.106
+bcrypt==3.1.6
 boto3==1.9.96
 botocore==1.12.96
 certifi==2018.4.16
+cffi==1.12.2
 cfn-flip==1.1.0.post1
 chardet==3.0.4
 Click==7.0
@@ -28,6 +30,7 @@ notifiers==1.0.3
 oauthlib==3.0.1
 placebo==0.8.2
 pyasn1==0.4.5
+pycparser==2.19
 PyJWT==1.7.1
 PySocks==1.6.8
 python-dateutil==2.6.1
