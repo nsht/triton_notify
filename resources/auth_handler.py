@@ -1,5 +1,6 @@
 import datetime
 import logging
+import pdb
 
 from flask import current_app as app
 from flask import request
@@ -7,6 +8,7 @@ from resources.constants import *
 from flask_restful import abort
 import jwt
 
+from models.models import User
 
 def check_message_type(func):
     def inner(*args, **kwargs):
@@ -63,3 +65,14 @@ def validate_auth_token(func):
             return func(*args, **kwargs)
     return inner
 
+def do_login(username,password):
+    if username == False or password == False:
+        return False
+
+    user = User.query.filter_by(username='admin').first()
+    if not user:
+        return False
+    if user.username != username:
+        return False
+    # Todo handle password and user status validation
+    return True

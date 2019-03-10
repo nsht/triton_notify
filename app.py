@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models.models import db
 from resources.telegram import Telegram
 from resources.twitter import Twitter
-from resources.auth_handler import check_message_type, create_auth_token, validate_auth_token
+from resources.auth_handler import check_message_type, create_auth_token, validate_auth_token,do_login
 from resources.constants import *
 
 app = Flask(__name__)
@@ -68,6 +68,12 @@ class Login(Resource):
             f"{datetime.datetime.utcnow().isoformat()} | Login Attempted | {request.remote_addr}"
         )
         # TODO write login validation
+        login_details = request.json
+
+        login_status = do_login(login_details.get('username'),login_details.get('password'),)
+        print(login_status)
+        if login_status is not True:
+            return {"status":"username or password is invalid"}, 401
         auth_token = create_auth_token(1)
         return {"token": auth_token}, 200
 
