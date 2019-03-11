@@ -7,10 +7,16 @@ from flask import Flask, request, make_response
 from flask_restful import Resource, Api, abort
 from flask_sqlalchemy import SQLAlchemy
 
-from models.models import db
+from models.models import db, User
 from resources.telegram import Telegram
 from resources.twitter import Twitter
-from resources.auth_handler import check_message_type, create_auth_token, validate_auth_token,do_login
+from resources.auth_handler import (
+    check_message_type,
+    create_auth_token,
+    validate_auth_token,
+    do_login,
+)
+
 from resources.constants import *
 
 app = Flask(__name__)
@@ -59,7 +65,7 @@ class Message(Resource):
         if message_status:
             return message_status, message_status["status_code"]
         else:
-            return {"status":"error"},500
+            return {"status": "error"}, 500
 
 
 class Login(Resource):
@@ -67,14 +73,13 @@ class Login(Resource):
         app.logger.info(
             f"{datetime.datetime.utcnow().isoformat()} | Login Attempted | {request.remote_addr}"
         )
-        # TODO write login validation
         login_details = request.json
 
-        login_status = do_login(login_details.get('username'),login_details.get('password'),)
-        print(login_status)
+        login_status = do_login(login_details.get("username"), login_details.get("password"))
         if login_status is not True:
-            return {"status":"username or password is invalid"}, 401
-        auth_token = create_auth_token(1)
+            return {"status": "username or password is invalid"}, 401
+        user = User.query.filter_by(username=login_details.get("username")).first()
+        auth_token = create_auth_token(user.uid)
         return {"token": auth_token}, 200
 
 
