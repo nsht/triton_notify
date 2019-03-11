@@ -7,8 +7,10 @@ from flask import request
 from resources.constants import *
 from flask_restful import abort
 import jwt
+import bcrypt
 
 from models.models import User
+
 
 def check_message_type(func):
     def inner(*args, **kwargs):
@@ -39,40 +41,48 @@ def create_auth_token(user_id):
         )
         return
 
+
 def decode_auth_token(auth_token):
     try:
-        payload = jwt.decode(auth_token,SECRET_KEY)
-        return payload['sub']
+        payload = jwt.decode(auth_token, SECRET_KEY)
+        return payload["sub"]
     except jwt.ExpiredSignatureError:
         app.logger.error(
             f"{datetime.datetime.utcnow().isoformat()} |Signature Expired | {request.remote_addr}"
         )
-        return 'Signature Expired'
+        return "Signature Expired"
     except jwt.InvalidTokenError:
         app.logger.error(
             f"{datetime.datetime.utcnow().isoformat()} |Invalid token| {request.remote_addr}"
         )
-        return 'Invalid token'
+        return "Invalid token"
+
 
 def validate_auth_token(func):
-    def inner(*args,**kwargs):
+    def inner(*args, **kwargs):
         auth_token = request.json.get("auth_token", "NA")
         token_data = decode_auth_token(auth_token)
         print(token_data)
-        if isinstance(token_data,str):
+        if isinstance(token_data, str):
             abort(401, message=f"Invalid Token")
         else:
             return func(*args, **kwargs)
+
     return inner
 
-def do_login(username,password):
+
+def do_login(username, password):
     if username == False or password == False:
         return False
 
-    user = User.query.filter_by(username='admin').first()
+    user = User.query.filter_by(username=username).first()
     if not user:
         return False
+
+    # Redudant check since user object is fetched by username
     if user.username != username:
         return False
-    # Todo handle password and user status validation
+    if bcrypt.hashpw(password.encode(), user.password) != user.password:
+        return False
+
     return True
