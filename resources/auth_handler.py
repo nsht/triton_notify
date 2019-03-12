@@ -60,9 +60,13 @@ def decode_auth_token(auth_token):
 
 def validate_auth_token(func):
     def inner(*args, **kwargs):
-        auth_token = request.json.get("auth_token", "NA")
+        auth_header = request.headers.get('Authorization',"")
+        try:
+            auth_token = auth_header.split(" ")[1]
+        except IndexError:
+            abort(401,message='Bearer token malformed')
+        print(auth_token)
         token_data = decode_auth_token(auth_token)
-        print(token_data)
         if isinstance(token_data, str):
             abort(401, message=f"Invalid Token")
         else:
@@ -86,3 +90,4 @@ def do_login(username, password):
         return False
 
     return True
+
