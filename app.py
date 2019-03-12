@@ -49,6 +49,7 @@ class Index(Resource):
 
 
 class HealthCheck(Resource):
+    @validate_auth_token
     def get(self):
         app.logger.info(
             f"{datetime.datetime.utcnow().isoformat()} | HealthCheck done | {request.remote_addr}"
