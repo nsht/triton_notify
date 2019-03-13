@@ -95,12 +95,12 @@ if __name__ == "__main__":
 
 # TODO
 # Add formaters to logs
-# Create users and  tokens manually
-# Function to validate tokens
-# Functions to create tokens
+# Create users and  tokens manually x
+# Function to validate tokens x
+# Functions to create tokens x
 # Functions to create/delete users
 # Functions to log request numbers
 # Functions to implement ratelimiting
 # Queues to implement writes to db
 # Email sender
-# Log writer
+# Log writer x
