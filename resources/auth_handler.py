@@ -34,6 +34,9 @@ def create_auth_token(user_id):
     }
     try:
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256").decode()
+        app.logger.info(
+            f"{datetime.datetime.utcnow().isoformat()} | Auth token generated for uid:{user_id} | {request.remote_addr}"
+        )
         return token
     except Exception as e:
         app.logger.error(
@@ -45,6 +48,9 @@ def create_auth_token(user_id):
 def decode_auth_token(auth_token):
     try:
         payload = jwt.decode(auth_token, SECRET_KEY)
+        app.logger.error(
+            f"{datetime.datetime.utcnow().isoformat()} | Token Decoded for uid {payload['sub']} | {request.remote_addr}"
+        )
         return payload["sub"]
     except jwt.ExpiredSignatureError:
         app.logger.error(
@@ -60,14 +66,20 @@ def decode_auth_token(auth_token):
 
 def validate_auth_token(func):
     def inner(*args, **kwargs):
-        auth_header = request.headers.get('Authorization',"")
+        auth_header = request.headers.get("Authorization", "")
         try:
             auth_token = auth_header.split(" ")[1]
         except IndexError:
-            abort(401,message='Bearer token malformed')
+            app.logger.error(
+                f"{datetime.datetime.utcnow().isoformat()} | Bearer token malformed | {request.remote_addr}"
+            )
+            abort(401, message="Bearer token malformed")
         print(auth_token)
         token_data = decode_auth_token(auth_token)
         if isinstance(token_data, str):
+            app.logger.error(
+                f"{datetime.datetime.utcnow().isoformat()} | Invalid Token | {request.remote_addr}"
+            )
             abort(401, message=f"Invalid Token")
         else:
             return func(*args, **kwargs)
@@ -77,17 +89,28 @@ def validate_auth_token(func):
 
 def do_login(username, password):
     if username == False or password == False:
+        app.logger.error(
+            f"{datetime.datetime.utcnow().isoformat()} | Failed Login No username or password for: {username} | {request.remote_addr}"
+        )
         return False
 
     user = User.query.filter_by(username=username).first()
     if not user:
+        app.logger.error(
+            f"{datetime.datetime.utcnow().isoformat()} | Failed Login username not found for: {username} | {request.remote_addr}"
+        )
         return False
 
     # Redudant check since user object is fetched by username
     if user.username != username:
         return False
     if bcrypt.hashpw(password.encode(), user.password) != user.password:
+        app.logger.error(
+            f"{datetime.datetime.utcnow().isoformat()} | Failed Login invalid password for: {username} | {request.remote_addr}"
+        )
         return False
-
+    app.logger.info(
+        f"{datetime.datetime.utcnow().isoformat()} | Login Successfull for: {username} | {request.remote_addr}"
+    )
     return True
 
