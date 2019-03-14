@@ -15,6 +15,7 @@ from resources.auth_handler import (
     create_auth_token,
     validate_auth_token,
     do_login,
+    check_user_permissions
 )
 
 from resources.constants import *
@@ -60,13 +61,14 @@ class HealthCheck(Resource):
 class Message(Resource):
     @validate_auth_token
     @check_message_type
+    @check_user_permissions
     def post(self, message_type):
         message_provider = MESSAGE_PROVIDERS.get(message_type)(request.json, request)
         message_status = message_provider.send_message()
         if message_status:
             return message_status, message_status["status_code"]
         else:
-            return {"status": "error"}, 500
+            return {"status": "error sending message"}, 500
 
 
 class Login(Resource):
