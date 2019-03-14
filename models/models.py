@@ -43,4 +43,4 @@ class UserPermissions(db.Model):
     )
 
     def __repr__(self):
-        return f"Permission{self.perm_id}, User={self.user_id}"
+        return f"Permission: {self.perm_id}, User={self.user_id}"
