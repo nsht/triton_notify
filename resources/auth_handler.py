@@ -9,7 +9,7 @@ from flask_restful import abort
 import jwt
 import bcrypt
 
-from models.models import User
+from models.models import db, User, Permissions, UserPermissions
 
 
 def check_message_type(func):
@@ -26,12 +26,39 @@ def check_message_type(func):
     return inner
 
 
+def check_user_permissions(func):
+    def inner(*args, **kwargs):
+        auth_header = request.headers.get("Authorization", "")
+        auth_token = auth_header.split(" ")[1]
+        payload = jwt.decode(auth_token, SECRET_KEY)
+        permissions = payload.get("permissions").split(",")
+        message_type = kwargs.get("message_type")
+        if message_type in permissions:
+            return func(*args, **kwargs)
+        else:
+            app.logger.error(
+                f"{datetime.datetime.utcnow().isoformat()} | Insufficient Permission {message_type} for user:{payload['sub']} | {request.remote_addr}"
+            )
+            abort(401, message=f"Insufficient Permissions")
+
+    return inner
+
+
 def create_auth_token(user_id):
+    permission_data = (
+        db.session.query(User, Permissions, UserPermissions)
+        .filter(User.uid == UserPermissions.user_id)
+        .filter(Permissions.perm_id == UserPermissions.perm_id)
+        .filter(User.uid == user_id)
+    )
+    permission_list = [x.Permissions.perm_name for x in permission_data]
     payload = {
         "exp": datetime.datetime.utcnow() + datetime.timedelta(days=1),
         "iat": datetime.datetime.utcnow(),
         "sub": user_id,
+        "permissions": ",".join(permission_list),
     }
+    print(payload)
     try:
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256").decode()
         app.logger.info(
@@ -48,7 +75,7 @@ def create_auth_token(user_id):
 def decode_auth_token(auth_token):
     try:
         payload = jwt.decode(auth_token, SECRET_KEY)
-        app.logger.error(
+        app.logger.info(
             f"{datetime.datetime.utcnow().isoformat()} | Token Decoded for uid {payload['sub']} | {request.remote_addr}"
         )
         return payload["sub"]
@@ -76,6 +103,7 @@ def validate_auth_token(func):
             abort(401, message="Bearer token malformed")
         print(auth_token)
         token_data = decode_auth_token(auth_token)
+        # Change isistance check to boolean check
         if isinstance(token_data, str):
             app.logger.error(
                 f"{datetime.datetime.utcnow().isoformat()} | Invalid Token | {request.remote_addr}"
