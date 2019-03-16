@@ -20,6 +20,10 @@ def client():
 
 def test_empty_db(client):
     """Start with a blank database."""
-    rv = client.get('/')
-    assert b'ok' in rv.data
+    response = client.get('/')
+    assert b'ok' in response.data
 
+def test_unauthorized_access(client):
+    """Send request without auth"""
+    response = client.get('/healthcheck')
+    assert(response.status_code == 401)
