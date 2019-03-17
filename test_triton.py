@@ -23,7 +23,12 @@ def test_empty_db(client):
     response = client.get('/')
     assert b'ok' in response.data
 
-def test_unauthorized_access(client):
+def test_unauthorized_healthcheck_access(client):
     """Send request without auth"""
     response = client.get('/healthcheck')
+    assert(response.status_code == 401)
+
+def test_unauthorized_message_send(client):
+    """Send message send request without auth"""
+    response = client.post('/message/telegram')
     assert(response.status_code == 401)
