@@ -4,12 +4,12 @@ import pdb
 
 from flask import current_app as app
 from flask import request
-from resources.constants import *
+from triton_notify.resources.constants import *
 from flask_restful import abort
 import jwt
 import bcrypt
 
-from models.models import db, User, Permissions, UserPermissions
+from triton_notify.models.models import db, User, Permissions, UserPermissions
 
 
 def check_message_type(func):

@@ -7,38 +7,45 @@ from flask import Flask, request, make_response
 from flask_restful import Resource, Api, abort
 from flask_sqlalchemy import SQLAlchemy
 
-from models.models import db, User
-from resources.telegram import Telegram
-from resources.twitter import Twitter
-from resources.auth_handler import (
+from triton_notify.models.models import db, User
+from triton_notify.resources.telegram import Telegram
+from triton_notify.resources.twitter import Twitter
+from triton_notify.resources.auth_handler import (
     check_message_type,
     create_auth_token,
     validate_auth_token,
     do_login,
-    check_user_permissions
+    check_user_permissions,
 )
 
-from resources.constants import *
-
-app = Flask(__name__)
-app.logger.setLevel(logging.DEBUG)
-
-# TODO switch out to rds/sql after testing
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.app_context().push()
-db.init_app(app)
+from triton_notify.resources.constants import *
 
 
-# Adds RotatingFileHandler if app is not running on aws lambda
-# Since labda instances are read only RotatingFileHandler won't work
-# In lambda logs and print statements are added to aws cloudwatch logs
-if os.environ.get("AWS_EXECUTION_ENV") == None:
-    handler = RotatingFileHandler("app.log", maxBytes=10000, backupCount=3)
-    handler.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
+def create_app():
+    app = Flask(__name__, instance_relative_config=True)
+    app.logger.setLevel(logging.DEBUG)
+    # TODO switch out to rds/sql after testing
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.app_context().push()
+    db.init_app(app)
 
+    # Adds RotatingFileHandler if app is not running on aws lambda
+    # Since labda instances are read only RotatingFileHandler won't work
+    # In lambda logs and print statements are added to aws cloudwatch logs
+    if os.environ.get("AWS_EXECUTION_ENV") == None:
+        handler = RotatingFileHandler("app.log", maxBytes=10000, backupCount=3)
+        handler.setLevel(logging.INFO)
+        app.logger.addHandler(handler)
+
+    return app
+
+
+app = create_app()
 api = Api(app)
+
+# app = Flask(__name__)
+
 
 # MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
 MESSAGE_PROVIDERS = {"telegram": Telegram, "twitter": Twitter}
