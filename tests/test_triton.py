@@ -8,14 +8,14 @@ import triton_notify
 
 @pytest.fixture
 def client():
-    db_fd, triton_notify.config["DATABASE"] = tempfile.mkstemp()
-    triton_notify.config["TESTING"] = True
-    client = triton_notify.test_client()
+    db_fd, triton_notify.app.config["DATABASE"] = tempfile.mkstemp()
+    triton_notify.app.config["TESTING"] = True
+    client = triton_notify.app.test_client()
 
     yield client
 
     os.close(db_fd)
-    os.unlink(triton_notify.config["DATABASE"])
+    os.unlink(triton_notify.app.config["DATABASE"])
 
 
 def test_empty_db(client):
