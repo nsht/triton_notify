@@ -7,10 +7,10 @@ from flask import Flask, request, make_response
 from flask_restful import Resource, Api, abort
 from flask_sqlalchemy import SQLAlchemy
 
-from models.models import db, User
-from resources.telegram import Telegram
-from resources.twitter import Twitter
-from resources.auth_handler import (
+from triton_notify.models.models import db, User
+from triton_notify.resources.telegram import Telegram
+from triton_notify.resources.twitter import Twitter
+from triton_notify.resources.auth_handler import (
     check_message_type,
     create_auth_token,
     validate_auth_token,
@@ -18,7 +18,7 @@ from resources.auth_handler import (
     check_user_permissions
 )
 
-from resources.constants import *
+from triton_notify.resources.constants import *
 
 app = Flask(__name__)
 app.logger.setLevel(logging.DEBUG)
