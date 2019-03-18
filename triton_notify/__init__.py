@@ -20,25 +20,32 @@ from triton_notify.resources.auth_handler import (
 
 from triton_notify.resources.constants import *
 
-app = Flask(__name__)
-app.logger.setLevel(logging.DEBUG)
 
-# TODO switch out to rds/sql after testing
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.app_context().push()
-db.init_app(app)
+def create_app():
+    app = Flask(__name__, instance_relative_config=True)
+    app.logger.setLevel(logging.DEBUG)
+    # TODO switch out to rds/sql after testing
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.app_context().push()
+    db.init_app(app)
+
+    # Adds RotatingFileHandler if app is not running on aws lambda
+    # Since labda instances are read only RotatingFileHandler won't work
+    # In lambda logs and print statements are added to aws cloudwatch logs
+    if os.environ.get("AWS_EXECUTION_ENV") == None:
+        handler = RotatingFileHandler("app.log", maxBytes=10000, backupCount=3)
+        handler.setLevel(logging.INFO)
+        app.logger.addHandler(handler)
+
+    return app
 
 
-# Adds RotatingFileHandler if app is not running on aws lambda
-# Since labda instances are read only RotatingFileHandler won't work
-# In lambda logs and print statements are added to aws cloudwatch logs
-if os.environ.get("AWS_EXECUTION_ENV") == None:
-    handler = RotatingFileHandler("app.log", maxBytes=10000, backupCount=3)
-    handler.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
-
+app = create_app()
 api = Api(app)
+
+# app = Flask(__name__)
+
 
 # MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
 MESSAGE_PROVIDERS = {"telegram": Telegram, "twitter": Twitter}
