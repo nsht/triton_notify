@@ -15,7 +15,7 @@ from triton_notify.resources.auth_handler import (
     create_auth_token,
     validate_auth_token,
     do_login,
-    check_user_permissions
+    check_user_permissions,
 )
 
 from triton_notify.resources.constants import *
