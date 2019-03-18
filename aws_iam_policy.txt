@@ -1,0 +1,78 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:CreateFunction",
+                "lambda:ListVersionsByFunction",
+                "logs:DescribeLogStreams",
+                "route53:GetHostedZone",
+                "events:PutRule",
+                "s3:CreateBucket",
+                "iam:CreateRole",
+                "cloudformation:DescribeStackResource",
+                "iam:AttachRolePolicy",
+                "iam:PutRolePolicy",
+                "apigateway:DELETE",
+                "events:ListRuleNamesByTarget",
+                "apigateway:PATCH",
+                "cloudformation:UpdateStack",
+                "events:ListRules",
+                "events:RemoveTargets",
+                "lambda:DeleteFunction",
+                "logs:FilterLogEvents",
+                "apigateway:GET",
+                "events:ListTargetsByRule",
+                "cloudformation:ListStackResources",
+                "iam:GetRole",
+                "events:DescribeRule",
+                "apigateway:PUT",
+                "lambda:GetFunction",
+                "route53:ListHostedZones",
+                "route53:ChangeResourceRecordSets",
+                "lambda:UpdateFunctionConfiguration",
+                "cloudformation:DescribeStacks",
+                "events:DeleteRule",
+                "events:PutTargets",
+                "lambda:UpdateFunctionCode",
+                "lambda:AddPermission",
+                "cloudformation:CreateStack",
+                "cloudformation:DeleteStack",
+                "apigateway:POST",
+                "lambda:RemovePermission",
+                "lambda:GetPolicy"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "iam:PassRole",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:role/*-ZappaLambdaExecutionRole",
+                "arn:aws:s3:::triton"
+            ]
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:ListBucketMultipartUploads",
+                "s3:AbortMultipartUpload",
+                "s3:DeleteObject",
+                "s3:ListMultipartUploadParts"
+            ],
+            "Resource": [
+                "arn:aws:s3:::bucketname",
+                "arn:aws:s3:::bucketname/*"
+            ]
+        }
+    ]
+}
