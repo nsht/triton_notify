@@ -8,3 +8,8 @@ zappa_settings.json
 *.pyc
 test.db
 app.log
+triton_notify.egg-info/SOURCES.txt
+triton_notify.egg-info/PKG-INFO
+triton_notify.egg-info/dependency_links.txt
+triton_notify.egg-info/top_level.txt
+triton_notify.egg-info/requires.txt
