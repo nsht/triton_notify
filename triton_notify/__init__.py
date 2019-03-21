@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from triton_notify.models.models import db, User
 from triton_notify.resources.telegram import Telegram
 from triton_notify.resources.twitter import Twitter
+from triton_notify.resources.email import Email
 from triton_notify.resources.auth_handler import (
     check_message_type,
     create_auth_token,
@@ -33,7 +34,7 @@ def create_app():
     # Adds RotatingFileHandler if app is not running on aws lambda
     # Since labda instances are read only RotatingFileHandler won't work
     # In lambda logs and print statements are added to aws cloudwatch logs
-    if os.environ.get("AWS_EXECUTION_ENV") == None:
+    if os.environ.get("AWS_EXECUTION_ENV") is None:
         handler = RotatingFileHandler("app.log", maxBytes=10000, backupCount=3)
         handler.setLevel(logging.INFO)
         app.logger.addHandler(handler)
@@ -48,7 +49,7 @@ api = Api(app)
 
 
 # MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
-MESSAGE_PROVIDERS = {"telegram": Telegram, "twitter": Twitter}
+MESSAGE_PROVIDERS = {"telegram": Telegram, "twitter": Twitter, "email": Email}
 
 
 class Index(Resource):
