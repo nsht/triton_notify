@@ -86,7 +86,9 @@ class Login(Resource):
         )
         login_details = request.json
 
-        login_status = do_login(login_details.get("username"), login_details.get("password"))
+        login_status = do_login(
+            login_details.get("username"), login_details.get("password")
+        )
         if login_status is not True:
             return {"status": "username or password is invalid"}, 401
         user = User.query.filter_by(username=login_details.get("username")).first()

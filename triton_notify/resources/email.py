@@ -42,50 +42,38 @@ class Email:
                 "status_message": "Invalid Request",
                 "status_code": 400,
             }
-        
+
         if not self.body_html:
             self.body_html = self.apply_template(self.message)
         client = boto3.client("ses", region_name=self.region_name)
         try:
             response = client.send_email(
-                Destination={
-                    'ToAddresses': [
-                        self.recipient,
-                    ],
-                },
+                Destination={"ToAddresses": [self.recipient]},
                 Message={
-                    'Body': {
-                        'Html': {
-                            'Charset': self.charset,
-                            'Data': self.body_html,
-                        },
-                        'Text': {
-                            'Charset': self.charset,
-                            'Data': self.message,
-                        },
+                    "Body": {
+                        "Html": {"Charset": self.charset, "Data": self.body_html},
+                        "Text": {"Charset": self.charset, "Data": self.message},
                     },
-                    'Subject': {
-                        'Charset': self.charset,
-                        'Data': self.subject,
-                    },
+                    "Subject": {"Charset": self.charset, "Data": self.subject},
                 },
-                Source=self.sender
+                Source=self.sender,
             )
-            # Display an error if something goes wrong.	
         except ClientError as e:
             return {
                 "message_status": "Not Sent",
-                "status_message": "Unable to send message reason:{}".format(e.response['Error']['Message']),
+                "status_message": "Unable to send message reason:{}".format(
+                    e.response["Error"]["Message"]
+                ),
                 "status_code": 500,
             }
-            print(e.response['Error']['Message'])
+            print(e.response["Error"]["Message"])
         else:
             return {
                 "message_status": "Sent",
                 "status_message": "Message Sent Successfully",
                 "status_code": 200,
             }
-    
+
     # TODO improve templte and function
     def apply_template(self, message):
         template = f"""<html>
