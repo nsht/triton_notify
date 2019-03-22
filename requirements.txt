@@ -36,7 +36,6 @@ mccabe==0.6.1
 more-itertools==6.0.0
 notifiers==1.0.3
 oauthlib==3.0.1
-pkg-resources==0.0.0
 placebo==0.9.0
 pluggy==0.9.0
 py==1.8.0
