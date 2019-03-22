@@ -22,6 +22,12 @@ class Email:
         self.aws_secret_access_key = os.environ.get("AWS_SECRET_ACCESS_KEY")
         self.charset = "UTF-8"
 
+    def __len__(self):
+        return len(self.message)
+
+    def __repr__(self):
+        return "{!r}({!r})".format(self.__class__.__name__, self.message_data)
+
     def send_message(self):
         if not all([self.aws_access_key_id, self.aws_secret_access_key]):
             app.logger.error(
