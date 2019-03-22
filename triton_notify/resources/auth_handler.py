@@ -4,10 +4,12 @@ import pdb
 
 from flask import current_app as app
 from flask import request
-from triton_notify.resources.constants import *
 from flask_restful import abort
 import jwt
 import bcrypt
+
+from triton_notify.resources.constants import *
+
 
 from triton_notify.models.models import db, User, Permissions, UserPermissions
 
@@ -15,7 +17,10 @@ from triton_notify.models.models import db, User, Permissions, UserPermissions
 def check_message_type(func):
     def inner(*args, **kwargs):
         message_type = kwargs.get("message_type", "NA")
-        if kwargs.get("message_type", False) and kwargs.get("message_type") in MESSAGE_TYPES:
+        if (
+            kwargs.get("message_type", False)
+            and kwargs.get("message_type") in MESSAGE_TYPES
+        ):
             return func(*args, **kwargs)
         else:
             app.logger.error(
@@ -141,4 +146,3 @@ def do_login(username, password):
         f"{datetime.datetime.utcnow().isoformat()} | Login Successfull for: {username} | {request.remote_addr}"
     )
     return True
-
