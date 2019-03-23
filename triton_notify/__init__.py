@@ -36,7 +36,7 @@ def create_app():
     # Since labda instances are read only RotatingFileHandler won't work
     # In lambda logs and print statements are added to aws cloudwatch logs
     if os.environ.get("AWS_EXECUTION_ENV") is None:
-        handler = RotatingFileHandler("app.log", maxBytes=10000, backupCount=3)
+        handler = RotatingFileHandler("app.log", maxBytes=1_000_000, backupCount=3)
         handler.setLevel(logging.INFO)
         app.logger.addHandler(handler)
 
