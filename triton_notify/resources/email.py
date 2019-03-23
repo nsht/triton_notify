@@ -4,8 +4,10 @@ import os
 
 from notifiers import get_notifier
 import boto3
+from botocore.exceptions import ClientError
 
 from flask import current_app as app
+from flask import render_template
 
 
 class Email:
@@ -80,11 +82,6 @@ class Email:
                 "status_code": 200,
             }
 
-    # TODO improve templte and function
     def apply_template(self, message):
-        template = f"""<html>
-        <body>
-        <p>{message}</p>
-        </body>
-        </html>"""
+        template = render_template("base_email_template.html", message=message)
         return template
