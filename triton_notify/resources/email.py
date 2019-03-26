@@ -18,7 +18,7 @@ class Email:
         self.recipient = message_data.get("recipient")
         self.subject = message_data.get("subject", "New Notification Triton")
         self.message = message_data.get("message")
-        self.body_html = message_data.get("message_html")
+        self.message_html = message_data.get("message_html")
         self.region_name = os.environ.get("AWS_REGION_NAME", "us-east-1")
         self.aws_access_key_id = os.environ.get("AWS_ACCESS_KEY_ID")
         self.aws_secret_access_key = os.environ.get("AWS_SECRET_ACCESS_KEY")
@@ -51,18 +51,28 @@ class Email:
                 "status_code": 400,
             }
 
-        if not self.body_html:
-            self.body_html = self.apply_template(self.message)
+        if not self.message_html:
+            self.message_html = self.apply_template(self.message)
+        status = self.send_email_ses(
+            self.recipient, self.sender, self.subject, self.message, self.message_html
+        )
+        return status
+
+    def apply_template(self, message):
+        template = render_template("base_email_template.html", message=message)
+        return template
+
+    def send_email_ses(self, recipient, sender, subject, message, message_html):
         client = boto3.client("ses", region_name=self.region_name)
         try:
             response = client.send_email(
-                Destination={"ToAddresses": [self.recipient]},
+                Destination={"ToAddresses": [recipient]},
                 Message={
                     "Body": {
-                        "Html": {"Charset": self.charset, "Data": self.body_html},
-                        "Text": {"Charset": self.charset, "Data": self.message},
+                        "Html": {"Charset": self.charset, "Data": message_html},
+                        "Text": {"Charset": self.charset, "Data": message},
                     },
-                    "Subject": {"Charset": self.charset, "Data": self.subject},
+                    "Subject": {"Charset": self.charset, "Data": subject},
                 },
                 Source=self.sender,
             )
@@ -74,14 +84,9 @@ class Email:
                 ),
                 "status_code": 500,
             }
-            print(e.response["Error"]["Message"])
         else:
             return {
                 "message_status": "Sent",
                 "status_message": "Message Sent Successfully",
                 "status_code": 200,
             }
-
-    def apply_template(self, message):
-        template = render_template("base_email_template.html", message=message)
-        return template
