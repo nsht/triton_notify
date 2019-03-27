@@ -20,10 +20,6 @@ class Email:
         self.message = message_data.get("message")
         self.message_html = message_data.get("message_html")
         # TODO move these and send_email_ses functions to a seperate class
-        self.region_name = os.environ.get("AWS_REGION_NAME", "us-east-1")
-        self.aws_access_key_id = os.environ.get("AWS_ACCESS_KEY_ID")
-        self.aws_secret_access_key = os.environ.get("AWS_SECRET_ACCESS_KEY")
-        self.charset = "UTF-8"
 
     def __len__(self):
         return len(self.message)
@@ -54,7 +50,12 @@ class Email:
         return template
 
     def send_email_ses(self, recipient, sender, subject, message, message_html):
-        if not all([self.aws_access_key_id, self.aws_secret_access_key]):
+        region_name = os.environ.get("AWS_REGION_NAME", "us-east-1")
+        aws_access_key_id = os.environ.get("AWS_ACCESS_KEY_ID")
+        aws_secret_access_key = os.environ.get("AWS_SECRET_ACCESS_KEY")
+        charset = "UTF-8"
+
+        if not all([aws_access_key_id, aws_secret_access_key]):
             app.logger.error(
                 f"{datetime.datetime.utcnow().isoformat()} | AWS keys not set; message_data:{self.message_data} | {self.request_obj.remote_addr}"
             )
@@ -63,16 +64,16 @@ class Email:
                 "status_message": "Server Error",
                 "status_code": 500,
             }
-        client = boto3.client("ses", region_name=self.region_name)
+        client = boto3.client("ses", region_name=region_name)
         try:
             response = client.send_email(
                 Destination={"ToAddresses": [recipient]},
                 Message={
                     "Body": {
-                        "Html": {"Charset": self.charset, "Data": message_html},
-                        "Text": {"Charset": self.charset, "Data": message},
+                        "Html": {"Charset": charset, "Data": message_html},
+                        "Text": {"Charset": charset, "Data": message},
                     },
-                    "Subject": {"Charset": self.charset, "Data": subject},
+                    "Subject": {"Charset": charset, "Data": subject},
                 },
                 Source=self.sender,
             )
