@@ -16,13 +16,13 @@ from triton_notify.models.models import db, User, Permissions, UserPermissions
 
 def check_message_type(func):
     def inner(*args, **kwargs):
-        message_type = kwargs.get("message_type", "NA")
         if (
             kwargs.get("message_type", False)
             and kwargs.get("message_type") in MESSAGE_TYPES
         ):
             return func(*args, **kwargs)
         else:
+            message_type = kwargs.get("message_type", "NA")
             app.logger.error(
                 f"{datetime.datetime.utcnow().isoformat()} | Invalid message type:{message_type} | {request.remote_addr}"
             )
@@ -106,7 +106,6 @@ def validate_auth_token(func):
                 f"{datetime.datetime.utcnow().isoformat()} | Bearer token malformed | {request.remote_addr}"
             )
             abort(401, message="Bearer token malformed")
-        print(auth_token)
         token_data = decode_auth_token(auth_token)
         # Change isistance check to boolean check
         if isinstance(token_data, str):
@@ -121,7 +120,7 @@ def validate_auth_token(func):
 
 
 def do_login(username, password):
-    if username == False or password == False:
+    if username is False or password is False:
         app.logger.error(
             f"{datetime.datetime.utcnow().isoformat()} | Failed Login No username or password for: {username} | {request.remote_addr}"
         )
