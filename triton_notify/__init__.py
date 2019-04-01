@@ -46,8 +46,6 @@ def create_app():
 app = create_app()
 api = Api(app)
 
-# app = Flask(__name__)
-
 
 # MESSAGE_TYPES = ["telegram", "email", "sms", "log", "twitter"]
 MESSAGE_PROVIDERS = {"telegram": Telegram, "twitter": Twitter, "email": Email}

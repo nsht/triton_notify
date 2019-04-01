@@ -19,8 +19,7 @@ class Email:
         self.subject = message_data.get("subject", "New Notification Triton")
         self.message = message_data.get("message")
         self.message_html = message_data.get("message_html")
-        # TODO move these and send_email_ses functions to a seperate class
-
+    
     def __len__(self):
         return len(self.message)
 
