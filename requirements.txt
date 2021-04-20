@@ -38,7 +38,7 @@ notifiers==1.0.3
 oauthlib==3.0.1
 placebo==0.9.0
 pluggy==0.9.0
-py==1.8.0
+py==1.10.0
 pyasn1==0.4.5
 pycodestyle==2.5.0
 pycparser==2.19
